@@ -4,6 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
 <title>Uma Aventura para Duany 🌊</title>
+<meta name="description" content="Uma aventura de aniversário com perguntas e labirintos que revela a chave de uma cifra secreta.">
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0a1f4d">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Duany 🎁">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
@@ -38,16 +51,25 @@
   <section class="screen active" id="screen-intro">
     <div class="card intro-card">
       <p class="eyebrow">uma aventura de aniversário</p>
+      <div class="gift-icon" aria-hidden="true">
+        <svg viewBox="0 0 64 64" width="48" height="48">
+          <rect x="6" y="26" width="52" height="34" rx="3" fill="#1e40af"/>
+          <rect x="6" y="26" width="52" height="10" fill="#0a1f4d"/>
+          <rect x="28" y="26" width="8" height="34" fill="#f2c14e"/>
+          <path d="M32 26c-6-2-14-4-14-12a8 8 0 0 1 14-6 8 8 0 0 1 14 6c0 8-8 10-14 12z" fill="#f2c14e" stroke="#c8971f" stroke-width="1.5"/>
+        </svg>
+      </div>
       <h1>Feliz Aniversário,<br><span class="gold-text">Duany</span> ✨</h1>
       <p class="lede">Antes do seu presente, o mar guarda um pequeno desafio.
       Responda, atravesse os labirintos, e quando o sol chegar ao fim do horizonte,
       uma chave dourada será revelada — ela abre o bilhete que está dentro da caixa.</p>
       <div class="rules">
         <div class="rule"><span class="rule-icon">♥</span> Você tem 3 vidas. Zerou? A maré te devolve ao início.</div>
-        <div class="rule"><span class="rule-icon">?</span> 5 perguntas.</div>
-        <div class="rule"><span class="rule-icon">◆</span> 3 labirintos.</div>
+        <div class="rule"><span class="rule-icon">?</span> 5 perguntas sobre nós dois.</div>
+        <div class="rule"><span class="rule-icon">◆</span> 3 labirintos de areia.</div>
       </div>
       <button class="btn-primary" id="btnStart">Começar a aventura</button>
+      <button class="btn-install" id="btnInstall" hidden>📲 Instalar no celular</button>
     </div>
   </section>
 
@@ -105,7 +127,7 @@
     <div class="card center-card prize-card">
       <p class="eyebrow">você conseguiu</p>
       <h2 class="gold-text">A chave é sua 🔑</h2>
-      <p class="lede">Use esta chave para decifrar o bilhete dentro da caixa. Feliz aniversário, Duanyyy. Tudo isso é só uma fração do quanto você merece ser celebrada.</p>
+      <p class="lede">Use esta chave para decifrar o bilhete dentro da caixa. Feliz aniversário, meu amor. Tudo isso é só uma fração do quanto você merece ser celebrada.</p>
       <div class="prize-frame">
         <img src="assets/chave-da-cifra.jpg" alt="Chave da cifra" id="prizeImg">
       </div>

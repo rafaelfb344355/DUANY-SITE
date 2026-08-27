@@ -240,6 +240,21 @@ h2{
 .btn-primary:active{transform:scale(0.97);}
 .btn-primary:focus-visible{outline:3px solid var(--foam); outline-offset:3px;}
 
+.btn-install{
+  display:block;
+  margin:14px auto 0;
+  background:transparent;
+  border:1px solid rgba(242,193,78,0.4);
+  color:var(--gold-pale);
+  font-family:var(--font-body);
+  font-weight:600;
+  font-size:13.5px;
+  padding:10px 18px;
+  border-radius:999px;
+  cursor:pointer;
+}
+.btn-install:active{background:rgba(242,193,78,0.12);}
+
 /* ===== Question ===== */
 #qText{margin-bottom:22px;}
 .options{display:flex; flex-direction:column; gap:10px; margin-bottom:14px;}

@@ -8,28 +8,28 @@
 // um lugar que vocês querem visitar, uma piada interna, etc.)
 const QUESTIONS = [
   {
-    question: "Que foto estranha você tirou no meu celular?kkk",
-    options: ["Tião meio braço", "Pés sujos", "Comida", "Selva"],
+    question: "Qual foi o primeiro lugar onde a gente se encontrou pessoalmente?",
+    options: ["Praça central", "Praia", "Um café", "Festa de um amigo"],
     correct: 1
   },
   {
-    question: "Complete: Dança...",
-    options: ["Gatinho", "Minhoca louca", "Single Ladies", "Lagartixa"],
+    question: "Qual é a nossa música?",
+    options: ["Ainda não temos uma", "Aquela que toca no carro", "A que tocou no nosso primeiro encontro", "Qualquer uma do meu playlist"],
     correct: 2
   },
   {
-    question: "Aonde você sonha morar?",
-    options: ["Casa na praia", "Casa na montanha", "AP em São Paulo", "Nenhum lugar"],
+    question: "Se a gente pudesse viajar para qualquer lugar amanhã, para onde eu diria que quero te levar primeiro?",
+    options: ["Praia", "Montanha", "Outro país", "Nenhum lugar, só ficar com você já basta"],
     correct: 0
   },
   {
-    question: "Qual desses apelidos é o mais atual?",
-    options: ["Fofinha", "Fofa", "Single Ladies", "Tranz"],
+    question: "Qual é o apelido que eu mais uso com você?",
+    options: ["Amor", "Duda", "Meu bem", "Rainha"],
     correct: 0
   },
   {
     question: "O que eu digo que mais admiro em você?",
-    options: ["Seus olhos", "Suas cicatrizes", "Seu senso de humor", "Tudo isso junto"],
+    options: ["Sua força", "Seu sorriso", "Seu jeito de cuidar de todo mundo", "Tudo isso junto"],
     correct: 3
   }
 ];
@@ -439,3 +439,35 @@ function launchConfetti() {
 
 /* posiciona o sol assim que a página carrega */
 window.addEventListener("load", () => moveSun(0));
+
+/* =====================================================================
+   PWA: service worker + botão "instalar no celular"
+   ===================================================================== */
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js").catch(() => {
+      /* ambiente sem suporte (ex: abrindo o arquivo direto com file://) — ignora */
+    });
+  });
+}
+
+let deferredInstallPrompt = null;
+const btnInstall = document.getElementById("btnInstall");
+
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  btnInstall.hidden = false;
+});
+
+btnInstall.addEventListener("click", async () => {
+  if (!deferredInstallPrompt) return;
+  deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
+  btnInstall.hidden = true;
+});
+
+window.addEventListener("appinstalled", () => {
+  btnInstall.hidden = true;
+});
