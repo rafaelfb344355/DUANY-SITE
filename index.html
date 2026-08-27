@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>Uma Aventura para Duany 🌊</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Sky / horizon scene that runs behind everything -->
+<div class="sky" id="sky">
+  <div class="stars" id="stars"></div>
+  <svg class="arc" viewBox="0 0 400 200" preserveAspectRatio="none">
+    <path id="arcPath" d="M 10 190 A 190 190 0 0 1 390 190" fill="none" stroke="rgba(242,193,78,0.25)" stroke-width="2" stroke-dasharray="4 6"/>
+  </svg>
+  <div class="sun" id="sun">☼</div>
+  <div class="horizon-glow"></div>
+  <div class="waves">
+    <div class="wave wave1"></div>
+    <div class="wave wave2"></div>
+    <div class="wave wave3"></div>
+  </div>
+</div>
+
+<!-- HUD: lives + progress -->
+<header class="hud" id="hud" hidden>
+  <div class="lives" id="lives" aria-label="Vidas restantes"></div>
+  <div class="stage-label" id="stageLabel">Etapa 1 de 8</div>
+</header>
+
+<main id="app">
+
+  <!-- SCREEN: Intro -->
+  <section class="screen active" id="screen-intro">
+    <div class="card intro-card">
+      <p class="eyebrow">uma aventura de aniversário</p>
+      <h1>Feliz Aniversário,<br><span class="gold-text">Duany</span> ✨</h1>
+      <p class="lede">Antes do seu presente, o mar guarda um pequeno desafio.
+      Responda, atravesse os labirintos, e quando o sol chegar ao fim do horizonte,
+      uma chave dourada será revelada — ela abre o bilhete que está dentro da caixa.</p>
+      <div class="rules">
+        <div class="rule"><span class="rule-icon">♥</span> Você tem 3 vidas. Zerou? A maré te devolve ao início.</div>
+        <div class="rule"><span class="rule-icon">?</span> 5 perguntas.</div>
+        <div class="rule"><span class="rule-icon">◆</span> 3 labirintos.</div>
+      </div>
+      <button class="btn-primary" id="btnStart">Começar a aventura</button>
+    </div>
+  </section>
+
+  <!-- SCREEN: Question -->
+  <section class="screen" id="screen-question">
+    <div class="card">
+      <p class="eyebrow" id="qEyebrow">pergunta</p>
+      <h2 id="qText">?</h2>
+      <div class="options" id="qOptions"></div>
+      <p class="feedback" id="qFeedback"></p>
+    </div>
+  </section>
+
+  <!-- SCREEN: Maze -->
+  <section class="screen" id="screen-maze">
+    <div class="card maze-card">
+      <p class="eyebrow" id="mEyebrow">labirinto de areia</p>
+      <p class="maze-hint">Leve o barquinho ⛵ até a bandeira dourada 🏁. As áreas escuras são correnteza — cuidado!</p>
+      <div class="maze-wrap">
+        <div class="maze-grid" id="mazeGrid"></div>
+      </div>
+      <div class="dpad" id="dpad">
+        <button class="dbtn dup" data-dir="up" aria-label="Cima">▲</button>
+        <div class="dmid">
+          <button class="dbtn dleft" data-dir="left" aria-label="Esquerda">◀</button>
+          <button class="dbtn dright" data-dir="right" aria-label="Direita">▶</button>
+        </div>
+        <button class="dbtn ddown" data-dir="down" aria-label="Baixo">▼</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCREEN: Life lost -->
+  <section class="screen" id="screen-lifelost">
+    <div class="card center-card">
+      <p class="big-icon">🌊</p>
+      <h2>Ops! A correnteza levou uma vida.</h2>
+      <p class="lede" id="lifeLostText"></p>
+      <button class="btn-primary" id="btnContinueAfterLoss">Continuar</button>
+    </div>
+  </section>
+
+  <!-- SCREEN: Game Over -->
+  <section class="screen" id="screen-gameover">
+    <div class="card center-card">
+      <p class="big-icon">🐚</p>
+      <h2>As vidas acabaram...</h2>
+      <p class="lede">A maré apagou o caminho. Respire fundo e comece de novo — o tesouro vale a pena.</p>
+      <button class="btn-primary" id="btnRestart">Recomeçar do início</button>
+    </div>
+  </section>
+
+  <!-- SCREEN: Prize -->
+  <section class="screen" id="screen-prize">
+    <div class="card center-card prize-card">
+      <p class="eyebrow">você conseguiu</p>
+      <h2 class="gold-text">A chave é sua 🔑</h2>
+      <p class="lede">Use esta chave para decifrar o bilhete dentro da caixa. Feliz aniversário, Duanyyy. Tudo isso é só uma fração do quanto você merece ser celebrada.</p>
+      <div class="prize-frame">
+        <img src="assets/chave-da-cifra.jpg" alt="Chave da cifra" id="prizeImg">
+      </div>
+      <a class="btn-primary" href="assets/chave-da-cifra.jpg" download="chave-da-cifra-duany.jpg">Salvar a chave</a>
+    </div>
+  </section>
+
+</main>
+
+<canvas id="confetti"></canvas>
+
+<script src="script.js"></script>
+</body>
+</html>
