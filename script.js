@@ -8,28 +8,28 @@
 // um lugar que vocês querem visitar, uma piada interna, etc.)
 const QUESTIONS = [
   {
-    question: "Qual foi o primeiro lugar onde a gente se encontrou pessoalmente?",
-    options: ["Praça central", "Praia", "Um café", "Festa de um amigo"],
+    question: "Que foto estranha você tirou no meu celular?kkk",
+    options: ["Tião meio braço", "Pés sujos", "Comida", "Selva"],
     correct: 1
   },
   {
-    question: "Qual é a nossa música?",
-    options: ["Ainda não temos uma", "Aquela que toca no carro", "A que tocou no nosso primeiro encontro", "Qualquer uma do meu playlist"],
+    question: "Complete: Dança...",
+    options: ["Gatinho", "Minhoca louca", "Single Ladies", "Lagartixa"],
     correct: 2
   },
   {
-    question: "Se a gente pudesse viajar para qualquer lugar amanhã, para onde eu diria que quero te levar primeiro?",
-    options: ["Praia", "Montanha", "Outro país", "Nenhum lugar, só ficar com você já basta"],
+    question: "Aonde você sonha morar?",
+    options: ["Casa na praia", "Casa na montanha", "AP em São Paulo", "Nenhum lugar"],
     correct: 0
   },
   {
-    question: "Qual é o apelido que eu mais uso com você?",
-    options: ["Amor", "Duda", "Meu bem", "Rainha"],
+    question: "Qual desses apelidos é o mais atual?",
+    options: ["Fofinha", "Fofa", "Single Ladies", "Tranz"],
     correct: 0
   },
   {
     question: "O que eu digo que mais admiro em você?",
-    options: ["Sua força", "Seu sorriso", "Seu jeito de cuidar de todo mundo", "Tudo isso junto"],
+    options: ["Seus olhos", "Suas cicatrizes", "Seu senso de humor", "Tudo isso junto"],
     correct: 3
   }
 ];
