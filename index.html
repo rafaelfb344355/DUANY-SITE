@@ -2,135 +2,71 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
-<title>Uma Aventura para Duany 🌊</title>
-<meta name="description" content="Uma aventura de aniversário com perguntas e labirintos que revela a chave de uma cifra secreta.">
-
-<!-- PWA -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jogos da Duany 🎮</title>
+<meta name="theme-color" content="#081733">
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0a1f4d">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Duany 🎁">
+<meta name="apple-mobile-web-app-title" content="Jogos 🎮">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
-<link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<style>
+:root{--gold:#f2c14e;--gold2:#c8971f;--pale:#fbe4a8;--foam:#eaf1ff}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;font-family:'Trebuchet MS','Segoe UI',sans-serif;color:var(--foam)}
+body{min-height:100vh;min-height:100dvh;background:linear-gradient(180deg,#081733 0%,#1e40af 70%,#4d7cf0 100%);background-attachment:fixed;
+padding:calc(env(safe-area-inset-top) + 28px) 18px max(28px,env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:center}
+.sun{width:44px;height:44px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff6da,var(--gold) 60%,var(--gold2));
+box-shadow:0 0 28px 8px rgba(242,193,78,.5);margin-bottom:14px}
+h1{margin:0 0 6px;font-family:Georgia,'Playfair Display',serif;font-size:clamp(28px,8vw,38px);color:var(--gold);text-align:center}
+.sub{margin:0 0 26px;opacity:.85;font-size:15px;text-align:center}
+.list{width:100%;max-width:420px;display:flex;flex-direction:column;gap:14px}
+.game{display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit;
+background:rgba(11,21,48,.6);border:1px solid rgba(242,193,78,.4);border-radius:20px;padding:16px;
+box-shadow:0 12px 30px rgba(0,0,0,.3);transition:transform .15s}
+.game:active{transform:scale(.98)}
+.ic{flex:none;width:62px;height:62px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:32px;
+background:linear-gradient(135deg,var(--pale),var(--gold) 55%,var(--gold2))}
+.tx b{display:block;font-size:18px;color:var(--pale);margin-bottom:3px}
+.tx span{display:block;font-size:13px;opacity:.85;line-height:1.35}
+.tx em{display:block;font-style:normal;font-size:12px;color:var(--gold);margin-top:5px;font-weight:700}
+.go{margin-left:auto;color:var(--gold);font-size:22px}
+.waves{margin-top:auto;padding-top:30px;font-size:26px;opacity:.7;letter-spacing:6px}
+</style>
 </head>
 <body>
+<div class="sun"></div>
+<h1>Jogos da Duany</h1>
+<p class="sub">Escolha uma aventura 🌊</p>
 
-<!-- Sky / horizon scene that runs behind everything -->
-<div class="sky" id="sky">
-  <div class="stars" id="stars"></div>
-  <svg class="arc" viewBox="0 0 400 200" preserveAspectRatio="none">
-    <path id="arcPath" d="M 10 190 A 190 190 0 0 1 390 190" fill="none" stroke="rgba(242,193,78,0.25)" stroke-width="2" stroke-dasharray="4 6"/>
-  </svg>
-  <div class="sun" id="sun">☼</div>
-  <div class="horizon-glow"></div>
-  <div class="waves">
-    <div class="wave wave1"></div>
-    <div class="wave wave2"></div>
-    <div class="wave wave3"></div>
-  </div>
+<div class="list">
+  <a class="game" href="memoria.html">
+    <div class="ic">🐚</div>
+    <div class="tx"><b>Memória do Tesouro</b><span>Encontre os pares de baús, conchas, estrelas-do-mar e símbolos secretos.</span><em id="rm">Sem recorde ainda</em></div>
+    <div class="go">›</div>
+  </a>
+  <a class="game" href="lula.html">
+    <div class="ic">🦑</div>
+    <div class="tx"><b>Lula das Ondas</b><span>Guie a lula pelas ondas, colete pérolas e não bata em nada.</span><em id="rl">Sem recorde ainda</em></div>
+    <div class="go">›</div>
+  </a>
+  <a class="game" href="pesca.html">
+    <div class="ic">🎣</div>
+    <div class="tx"><b>Pesca de Tesouros</b><span>Lance o anzol na hora certa e fisgue baús e gemas. Cuidado com os baiacus!</span><em id="rp">Sem recorde ainda</em></div>
+    <div class="go">›</div>
+  </a>
 </div>
+<div class="waves">〰〰〰</div>
 
-<!-- HUD: lives + progress -->
-<header class="hud" id="hud" hidden>
-  <div class="lives" id="lives" aria-label="Vidas restantes"></div>
-  <div class="stage-label" id="stageLabel">Etapa 1 de 8</div>
-</header>
-
-<main id="app">
-
-  <!-- SCREEN: Intro -->
-  <section class="screen active" id="screen-intro">
-    <div class="card intro-card">
-      <p class="eyebrow">uma aventura de aniversário</p>
-      <h1>Feliz Aniversário,<br><span class="gold-text">Duany</span> ✨</h1>
-      <p class="lede">Antes do seu presente, o mar guarda um pequeno desafio.
-      Responda, atravesse os labirintos, e quando o sol chegar ao fim do horizonte,
-      uma chave dourada será revelada — ela abre o bilhete que está dentro da caixa.</p>
-      <div class="rules">
-        <div class="rule"><span class="rule-icon">♥</span> Você tem 3 vidas. Zerou? A maré te devolve ao início.</div>
-        <div class="rule"><span class="rule-icon">?</span> 5 perguntas.</div>
-        <div class="rule"><span class="rule-icon">◆</span> 3 labirintos.</div>
-      </div>
-      <button class="btn-primary" id="btnStart">Começar a aventura</button>
-      <button class="btn-install" id="btnInstall" hidden>📲 Instalar no celular</button>
-    </div>
-  </section>
-
-  <!-- SCREEN: Question -->
-  <section class="screen" id="screen-question">
-    <div class="card">
-      <p class="eyebrow" id="qEyebrow">pergunta</p>
-      <h2 id="qText">?</h2>
-      <div class="options" id="qOptions"></div>
-      <p class="feedback" id="qFeedback"></p>
-    </div>
-  </section>
-
-  <!-- SCREEN: Maze -->
-  <section class="screen" id="screen-maze">
-    <div class="card maze-card">
-      <p class="eyebrow" id="mEyebrow">labirinto de areia</p>
-      <p class="maze-hint">Leve o barquinho ⛵ até a bandeira dourada 🏁. As áreas escuras são correnteza — cuidado!</p>
-      <div class="maze-wrap">
-        <div class="maze-grid" id="mazeGrid"></div>
-      </div>
-      <div class="dpad" id="dpad">
-        <button class="dbtn dup" data-dir="up" aria-label="Cima">▲</button>
-        <div class="dmid">
-          <button class="dbtn dleft" data-dir="left" aria-label="Esquerda">◀</button>
-          <button class="dbtn dright" data-dir="right" aria-label="Direita">▶</button>
-        </div>
-        <button class="dbtn ddown" data-dir="down" aria-label="Baixo">▼</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- SCREEN: Life lost -->
-  <section class="screen" id="screen-lifelost">
-    <div class="card center-card">
-      <p class="big-icon">🌊</p>
-      <h2>Ops! A correnteza levou uma vida.</h2>
-      <p class="lede" id="lifeLostText"></p>
-      <button class="btn-primary" id="btnContinueAfterLoss">Continuar</button>
-    </div>
-  </section>
-
-  <!-- SCREEN: Game Over -->
-  <section class="screen" id="screen-gameover">
-    <div class="card center-card">
-      <p class="big-icon">🐚</p>
-      <h2>As vidas acabaram...</h2>
-      <p class="lede">A maré apagou o caminho. Respire fundo e comece de novo — o tesouro vale a pena.</p>
-      <button class="btn-primary" id="btnRestart">Recomeçar do início</button>
-    </div>
-  </section>
-
-  <!-- SCREEN: Prize -->
-  <section class="screen" id="screen-prize">
-    <div class="card center-card prize-card">
-      <p class="eyebrow">você conseguiu</p>
-      <h2 class="gold-text">A chave é sua 🔑</h2>
-      <p class="lede">Use esta chave para decifrar o bilhete dentro da caixa. Feliz aniversário!!!, Tudo isso é só uma fração do quanto você merece ser celebrada.</p>
-      <div class="prize-frame">
-        <img src="assets/chave-da-cifra.jpg" alt="Chave da cifra" id="prizeImg">
-      </div>
-      <a class="btn-primary" href="assets/chave-da-cifra.jpg" download="chave-da-cifra-duany.jpg">Salvar a chave</a>
-    </div>
-  </section>
-
-</main>
-
-<canvas id="confetti"></canvas>
-
-<script src="script.js"></script>
+<script>
+function g(k){try{return localStorage.getItem(k)}catch(e){return null}}
+const m=JSON.parse(g("memoria_rec")||"null"),l=g("lula_rec"),p=g("pesca_rec");
+if(m)document.getElementById("rm").textContent=`🏆 ${m.t}s · ${m.m} jogadas`;
+if(l&&+l>0)document.getElementById("rl").textContent=`🏆 ${l} pérolas`;
+if(p&&+p>0)document.getElementById("rp").textContent=`🏆 ${p} pontos`;
+if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+</script>
 </body>
 </html>

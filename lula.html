@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#081733">
+<title>Lula das Ondas 🦑</title>
+<style>
+:root{--gold:#f2c14e;--gold2:#c8971f;--pale:#fbe4a8;--foam:#eaf1ff}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;font-family:'Trebuchet MS','Segoe UI',sans-serif;color:var(--foam);
+background:linear-gradient(180deg,#081733,#1e40af);touch-action:none}
+body{display:flex;flex-direction:column;align-items:center;padding:max(10px,env(safe-area-inset-top)) 12px max(12px,env(safe-area-inset-bottom))}
+.hud{display:flex;gap:8px;width:100%;max-width:400px;margin-bottom:8px}
+.chip{flex:1;text-align:center;background:rgba(8,23,51,.55);border:1px solid rgba(242,193,78,.4);border-radius:14px;padding:6px 4px}
+.chip small{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.06em;opacity:.7}
+.chip b{font-size:17px;color:var(--pale)}
+canvas{border:2px solid var(--gold);border-radius:14px;max-width:100%;touch-action:none}
+.pad{display:grid;grid-template-columns:repeat(3,58px);grid-template-rows:repeat(2,52px);gap:6px;margin-top:10px}
+.pad button{border-radius:50%;border:1px solid rgba(242,193,78,.45);background:rgba(242,193,78,.14);color:var(--pale);font-size:20px}
+.pad button:active{background:rgba(242,193,78,.35)}
+.u{grid-column:2;grid-row:1}.l{grid-column:1;grid-row:2}.d{grid-column:2;grid-row:2}.r{grid-column:3;grid-row:2}
+.ov{position:fixed;inset:0;background:rgba(8,23,51,.94);display:flex;align-items:center;justify-content:center;padding:20px;z-index:9}
+.ov.hide{display:none}
+.panel{max-width:340px;width:100%;text-align:center;background:rgba(11,21,48,.8);border:1px solid rgba(242,193,78,.4);border-radius:22px;padding:28px 22px}
+.panel h2{color:var(--gold);margin:0 0 10px}.panel p{font-size:14px;line-height:1.5;margin:0 0 16px;opacity:.9}
+.btn{border:0;width:100%;padding:14px;border-radius:999px;font-weight:800;font-size:16px;color:#081733;cursor:pointer;
+background:linear-gradient(135deg,var(--pale),var(--gold) 55%,var(--gold2))}
+.rec{background:var(--gold);color:#081733;font-weight:800;border-radius:10px;padding:8px;margin-bottom:12px;display:none}
+.rec.show{display:block}
+.home{position:fixed;top:max(6px,env(safe-area-inset-top));left:8px;z-index:20;text-decoration:none;color:#fbe4a8;font-weight:700;font-size:13px;background:rgba(8,23,51,.7);border:1px solid rgba(242,193,78,.5);border-radius:999px;padding:7px 12px}body{padding-top:calc(env(safe-area-inset-top) + 46px)!important}</style>
+</head>
+<body>
+<a class="home" href="index.html">← Menu</a>
+<div class="hud">
+  <div class="chip"><small>Pérolas</small><b id="s">0</b></div>
+  <div class="chip"><small>Tempo</small><b id="t">0s</b></div>
+  <div class="chip"><small>Recorde</small><b id="r">0</b></div>
+</div>
+<canvas id="c"></canvas>
+<div class="pad">
+  <button class="u" data-d="u">▲</button><button class="l" data-d="l">◀</button>
+  <button class="d" data-d="d">▼</button><button class="r" data-d="r">▶</button>
+</div>
+
+<div class="ov" id="ov">
+  <div class="panel">
+    <h2 id="ovT">Lula das Ondas 🦑</h2>
+    <div class="rec" id="rec">🏆 Novo recorde!</div>
+    <p id="ovP">Guie a lula pelas ondas, colete pérolas e cresça. Não bata nas paredes nem no próprio corpo! Use as setas, os botões ou deslize o dedo.</p>
+    <button class="btn" id="go">Mergulhar</button>
+  </div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const store={g(k){try{return localStorage.getItem(k)}catch(e){return this.m?.[k]??null}},
+ s(k,v){try{localStorage.setItem(k,v)}catch(e){(this.m=this.m||{})[k]=v}}};
+let best=parseInt(store.g("lula_rec")||"0",10);$("r").textContent=best;
+const N=16,cv=$("c"),x=cv.getContext("2d");
+let S;
+function fit(){S=Math.floor(Math.min(innerWidth-24,400,innerHeight-280)/N)*N||240;cv.width=cv.height=S}
+fit();addEventListener("resize",fit);
+let snake,dir,next,pearl,score,t0,loop,tick,wave=0,over=true;
+const DIRS={u:[0,-1],d:[0,1],l:[-1,0],r:[1,0]};
+function setDir(k){const d=DIRS[k];if(d[0]===-dir[0]&&d[1]===-dir[1])return;next=d}
+function place(){do{pearl=[Math.floor(Math.random()*N),Math.floor(Math.random()*N)]}while(snake.some(s=>s[0]===pearl[0]&&s[1]===pearl[1]))}
+function start(){
+  snake=[[8,8],[7,8],[6,8]];dir=next=[1,0];score=0;over=false;place();
+  $("s").textContent=0;$("t").textContent="0s";$("ov").classList.add("hide");
+  t0=Date.now();clearInterval(loop);
+  loop=setInterval(step,150);
+}
+function step(){
+  if(over)return;
+  dir=next;
+  const h=[snake[0][0]+dir[0],snake[0][1]+dir[1]];
+  if(h[0]<0||h[1]<0||h[0]>=N||h[1]>=N||snake.some(s=>s[0]===h[0]&&s[1]===h[1]))return end();
+  snake.unshift(h);
+  if(h[0]===pearl[0]&&h[1]===pearl[1]){
+    score++;$("s").textContent=score;place();
+    clearInterval(loop);loop=setInterval(step,Math.max(70,150-score*3));
+  }else snake.pop();
+  $("t").textContent=Math.round((Date.now()-t0)/1000)+"s";
+}
+function end(){
+  over=true;clearInterval(loop);
+  let nr=false;if(score>best){best=score;store.s("lula_rec",best);nr=true}
+  $("r").textContent=best;
+  $("ovT").textContent="A lula afundou! 🌊";
+  $("ovP").textContent=`Você coletou ${score} pérolas em ${Math.round((Date.now()-t0)/1000)}s. Recorde: ${best}.`;
+  $("rec").classList.toggle("show",nr);$("go").textContent="Tentar de novo";
+  $("ov").classList.remove("hide");
+}
+function draw(){
+  const u=S/N;wave+=.05;
+  const g=x.createLinearGradient(0,0,0,S);g.addColorStop(0,"#0a2a6b");g.addColorStop(1,"#1858b0");
+  x.fillStyle=g;x.fillRect(0,0,S,S);
+  x.strokeStyle="rgba(255,255,255,.14)";x.lineWidth=2;
+  for(let i=0;i<7;i++){x.beginPath();for(let px=0;px<=S;px+=8){const py=i*S/6+Math.sin(px*.04+wave+i)*5;px?x.lineTo(px,py):x.moveTo(px,py)}x.stroke()}
+  if(!snake)return;
+  // pearl
+  const p=x.createRadialGradient((pearl[0]+.4)*u,(pearl[1]+.4)*u,1,(pearl[0]+.5)*u,(pearl[1]+.5)*u,u*.4);
+  p.addColorStop(0,"#fff");p.addColorStop(1,"#f2c14e");
+  x.fillStyle=p;x.beginPath();x.arc((pearl[0]+.5)*u,(pearl[1]+.5)*u,u*.36,0,7);x.fill();
+  // body
+  snake.forEach((s,i)=>{
+    const r=u*(.46-Math.min(i,10)*.012);
+    x.fillStyle=i===0?"#f2c14e":(i%2?"#e07a8a":"#ee94a2");
+    x.beginPath();x.arc((s[0]+.5)*u,(s[1]+.5)*u+Math.sin(wave*2+i)*1.5,r,0,7);x.fill();
+  });
+  // eyes
+  const h=snake[0],cx=(h[0]+.5)*u,cy=(h[1]+.5)*u,px=-dir[1],py=dir[0];
+  [-1,1].forEach(k=>{const ex=cx+px*k*u*.2+dir[0]*u*.12,ey=cy+py*k*u*.2+dir[1]*u*.12;
+    x.fillStyle="#fff";x.beginPath();x.arc(ex,ey,u*.13,0,7);x.fill();
+    x.fillStyle="#081733";x.beginPath();x.arc(ex+dir[0]*2,ey+dir[1]*2,u*.06,0,7);x.fill()});
+}
+(function anim(){draw();requestAnimationFrame(anim)})();
+addEventListener("keydown",e=>{const m={ArrowUp:"u",ArrowDown:"d",ArrowLeft:"l",ArrowRight:"r",w:"u",s:"d",a:"l",d:"r"}[e.key];
+  if(m&&!over){e.preventDefault();setDir(m)}});
+document.querySelectorAll(".pad button").forEach(b=>b.addEventListener("touchstart",e=>{e.preventDefault();if(!over)setDir(b.dataset.d)},{passive:false}));
+document.querySelectorAll(".pad button").forEach(b=>b.onclick=()=>{if(!over)setDir(b.dataset.d)});
+let sx,sy;
+cv.addEventListener("touchstart",e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});
+cv.addEventListener("touchend",e=>{const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;
+  if(Math.max(Math.abs(dx),Math.abs(dy))<20||over)return;
+  setDir(Math.abs(dx)>Math.abs(dy)?(dx>0?"r":"l"):(dy>0?"d":"u"))},{passive:true});
+$("go").onclick=start;
+</script>
+</body>
+</html>

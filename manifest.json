@@ -1,7 +1,7 @@
 {
-  "name": "Aventura de Aniversário — Duany",
-  "short_name": "Duany 🎁",
-  "description": "Um jogo de praia e céu com perguntas e labirintos que revela a chave de uma cifra secreta.",
+  "name": "Jogos da Duany",
+  "short_name": "Jogos 🎮",
+  "description": "Memória do Tesouro, Lula das Ondas e Pesca de Tesouros.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

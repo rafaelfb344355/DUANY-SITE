@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#081733">
+<title>Pesca de Tesouros 🎣</title>
+<style>
+:root{--gold:#f2c14e;--gold2:#c8971f;--pale:#fbe4a8;--foam:#eaf1ff}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;font-family:'Trebuchet MS','Segoe UI',sans-serif;color:var(--foam);
+background:linear-gradient(180deg,#081733,#1e40af);touch-action:none}
+body{display:flex;flex-direction:column;align-items:center;padding:calc(env(safe-area-inset-top) + 46px) 10px max(10px,env(safe-area-inset-bottom))}
+.home{position:fixed;top:max(6px,env(safe-area-inset-top));left:8px;z-index:20;text-decoration:none;color:var(--pale);font-weight:700;font-size:13px;
+background:rgba(8,23,51,.7);border:1px solid rgba(242,193,78,.5);border-radius:999px;padding:7px 12px}
+.hud{display:flex;gap:8px;width:100%;max-width:400px;margin-bottom:8px}
+.chip{flex:1;text-align:center;background:rgba(8,23,51,.55);border:1px solid rgba(242,193,78,.4);border-radius:14px;padding:6px 4px}
+.chip small{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.06em;opacity:.7}
+.chip b{font-size:17px;color:var(--pale)}
+canvas{border:2px solid var(--gold);border-radius:14px;width:100%;max-width:400px;min-height:0;flex:1;object-fit:contain;touch-action:none}
+.fire{margin-top:8px;width:100%;max-width:400px;border:0;padding:13px;border-radius:999px;font-weight:800;font-size:16px;color:#081733;cursor:pointer;
+background:linear-gradient(135deg,var(--pale),var(--gold) 55%,var(--gold2))}
+.ov{position:fixed;inset:0;background:rgba(8,23,51,.94);display:flex;align-items:center;justify-content:center;padding:20px;z-index:9}
+.ov.hide{display:none}
+.panel{max-width:340px;width:100%;text-align:center;background:rgba(11,21,48,.8);border:1px solid rgba(242,193,78,.4);border-radius:22px;padding:28px 22px}
+.panel h2{color:var(--gold);margin:0 0 10px}.panel p{font-size:14px;line-height:1.5;margin:0 0 16px;opacity:.9}
+.rec{background:var(--gold);color:#081733;font-weight:800;border-radius:10px;padding:8px;margin-bottom:12px;display:none}
+.rec.show{display:block}
+</style>
+</head>
+<body>
+<a class="home" href="index.html">← Menu</a>
+<div class="hud">
+  <div class="chip"><small>Tempo</small><b id="t">45s</b></div>
+  <div class="chip"><small>Pontos</small><b id="s">0</b></div>
+  <div class="chip"><small>Recorde</small><b id="r">0</b></div>
+</div>
+<canvas id="c" width="360" height="520"></canvas>
+<button class="fire" id="fire">🎣 Lançar o anzol</button>
+
+<div class="ov" id="ov">
+  <div class="panel">
+    <h2 id="ovT">Pesca de Tesouros 🎣</h2>
+    <div class="rec" id="rec">🏆 Novo recorde!</div>
+    <p id="ovP">O anzol balança de um lado para o outro. Toque na tela (ou no botão) para lançar! Pegue baús, gemas, conchas e estrelas — mas fuja de botas velhas e baiacus. Você tem 45 segundos.</p>
+    <button class="fire" id="go">Pescar</button>
+  </div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const store={g(k){try{return localStorage.getItem(k)}catch(e){return this.m?.[k]??null}},
+ s(k,v){try{localStorage.setItem(k,v)}catch(e){(this.m=this.m||{})[k]=v}}};
+let best=parseInt(store.g("pesca_rec")||"0",10);$("r").textContent=best;
+const cv=$("c"),x=cv.getContext("2d"),W=360,H=520,OX=W/2,OY=84,DUR=45;
+const TYPES={
+ chest:{pts:60,sp:.35,r:20},gem:{pts:40,sp:1.2,r:14},shell:{pts:20,sp:.9,r:15},
+ star:{pts:15,sp:.9,r:15},boot:{pts:-10,sp:.6,r:16},puff:{pts:-25,sp:.5,r:18}};
+const BAG=["chest","chest","gem","gem","shell","shell","shell","star","star","boot","puff"];
+const EMO={gem:"💎",shell:"🐚",star:"⭐",boot:"👢",puff:"🐡"};
+let items,state,len,ang,carry,score,tl,last,pops,running=false,tt=0;
+function spawn(){
+  for(let n=0;n<40&&items.length<9;n++){
+    const k=BAG[Math.random()*BAG.length|0],r=TYPES[k].r,
+      it={k,r,x:r+10+Math.random()*(W-2*r-20),y:170+Math.random()*(H-210)};
+    if(items.every(o=>Math.hypot(o.x-it.x,o.y-it.y)>o.r+r+14))items.push(it);
+  }
+}
+function start(){
+  items=[];pops=[];state="swing";len=0;carry=null;score=0;tl=DUR;last=performance.now();tt=0;running=true;
+  spawn();$("s").textContent=0;$("t").textContent=DUR+"s";$("ov").classList.add("hide");
+  requestAnimationFrame(loop);
+}
+function fire(){if(running&&state==="swing"){state="out"}}
+function hookPos(){return[OX+Math.sin(ang)*len,OY+Math.cos(ang)*len]}
+function loop(now){
+  if(!running)return;
+  const dt=Math.min((now-last)/1000,.05);last=now;tt+=dt;tl-=dt;
+  if(tl<=0){tl=0;return end()}
+  if(state==="swing")ang=Math.sin(tt*1.7)*1.15;
+  else if(state==="out"){
+    len+=380*dt;const[hx,hy]=hookPos();
+    const hit=items.find(o=>Math.hypot(o.x-hx,o.y-hy)<o.r+6);
+    if(hit){carry=hit;items.splice(items.indexOf(hit),1);state="back"}
+    else if(hx<6||hx>W-6||hy>H-6)state="back";
+  }else if(state==="back"){
+    len-=300*(carry?TYPES[carry.k].sp:1)*dt;
+    if(len<=0){len=0;state="swing";
+      if(carry){const p=TYPES[carry.k].pts;score+=p;pops.push({x:OX,y:OY+10,t:(p>0?"+":"")+p,l:1,c:p>0?"#f2c14e":"#ff8a8a"});carry=null;spawn()}}
+  }
+  pops.forEach(p=>{p.y-=40*dt;p.l-=dt});pops=pops.filter(p=>p.l>0);
+  $("s").textContent=score;$("t").textContent=Math.ceil(tl)+"s";
+  draw();requestAnimationFrame(loop);
+}
+function chest(cx,cy,r){
+  x.fillStyle="#8a5a2a";x.fillRect(cx-r,cy-r*.6,r*2,r*1.3);
+  x.fillStyle="#a8702f";x.fillRect(cx-r,cy-r*.9,r*2,r*.5);
+  x.fillStyle="#f2c14e";x.fillRect(cx-r,cy-r*.15,r*2,r*.3);
+  x.strokeStyle="#4a2c14";x.lineWidth=2;x.strokeRect(cx-r,cy-r*.9,r*2,r*1.6);
+}
+function item(o,cx,cy){
+  if(o.k==="chest")return chest(cx,cy,o.r);
+  x.font=o.r*1.7+"px serif";x.textAlign="center";x.textBaseline="middle";x.fillText(EMO[o.k],cx,cy+1);
+}
+function draw(){
+  const sky=x.createLinearGradient(0,0,0,100);sky.addColorStop(0,"#4d7cf0");sky.addColorStop(1,"#9ec3ff");
+  x.fillStyle=sky;x.fillRect(0,0,W,100);
+  const sea=x.createLinearGradient(0,100,0,H);sea.addColorStop(0,"#1858b0");sea.addColorStop(1,"#081f52");
+  x.fillStyle=sea;x.fillRect(0,100,W,H-100);
+  x.strokeStyle="rgba(255,255,255,.35)";x.lineWidth=2;x.beginPath();
+  for(let px=0;px<=W;px+=6){const py=100+Math.sin(px*.06+tt*2)*3;px?x.lineTo(px,py):x.moveTo(px,py)}x.stroke();
+  // boat
+  x.fillStyle="#7a4a24";x.beginPath();x.moveTo(OX-34,70);x.quadraticCurveTo(OX,108,OX+34,70);x.closePath();x.fill();
+  x.fillStyle="#f2c14e";x.fillRect(OX-4,48,8,24);
+  items.forEach(o=>item(o,o.x,o.y+Math.sin(tt*2+o.x)*2));
+  // line
+  const[hx,hy]=hookPos();
+  x.strokeStyle="#fbe4a8";x.lineWidth=2;x.beginPath();x.moveTo(OX,OY);x.lineTo(hx,hy);x.stroke();
+  if(carry)item(carry,hx,hy+carry.r*.6);
+  x.fillStyle="#f2c14e";x.beginPath();x.arc(hx,hy,5,0,7);x.fill();
+  x.font="bold 20px sans-serif";x.textAlign="center";
+  pops.forEach(p=>{x.globalAlpha=Math.max(p.l,0);x.fillStyle=p.c;x.fillText(p.t,p.x,p.y);x.globalAlpha=1});
+}
+function end(){
+  running=false;let nr=false;
+  if(score>best){best=score;store.s("pesca_rec",best);nr=true}
+  $("r").textContent=best;$("t").textContent="0s";
+  $("ovT").textContent="Tempo esgotado! ⏱";
+  $("ovP").textContent=`Você juntou ${score} pontos. Recorde: ${best}.`;
+  $("rec").classList.toggle("show",nr);$("go").textContent="Pescar de novo";
+  $("ov").classList.remove("hide");
+}
+ang=0;items=[];draw();
+$("go").onclick=start;$("fire").onclick=fire;
+cv.addEventListener("pointerdown",e=>{e.preventDefault();fire()});
+addEventListener("keydown",e=>{if(e.code==="Space"||e.key==="ArrowDown"){e.preventDefault();fire()}});
+</script>
+</body>
+</html>
