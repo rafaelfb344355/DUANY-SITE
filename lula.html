@@ -69,7 +69,7 @@ function start(){
   snake=[[8,8],[7,8],[6,8]];dir=next=[1,0];score=0;over=false;place();
   $("s").textContent=0;$("t").textContent="0s";$("ov").classList.add("hide");
   t0=Date.now();clearInterval(loop);
-  loop=setInterval(step,150);
+  loop=setInterval(step,300);
 }
 function step(){
   if(over)return;
