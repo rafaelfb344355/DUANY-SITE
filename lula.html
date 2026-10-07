@@ -79,7 +79,7 @@ function step(){
   snake.unshift(h);
   if(h[0]===pearl[0]&&h[1]===pearl[1]){
     score++;$("s").textContent=score;place();
-    clearInterval(loop);loop=setInterval(step,Math.max(70,150-score*3));
+    clearInterval(loop);loop=setInterval(step,Math.max(70,300-score*3));
   }else snake.pop();
   $("t").textContent=Math.round((Date.now()-t0)/1000)+"s";
 }
